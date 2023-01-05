@@ -106,3 +106,40 @@ class BlackjackAgent:
 
     def decay_epsilon(self):
         self.epsilon = max(self.final_epsilon, self.epsilon - self.epsilon_decay)
+
+
+# *** WRITING TRAINING LOOP ***
+
+learning_rate = 0.01
+n_episodes = 100_000
+start_epsilon = 1.0
+epsilon_decay = start_epsilon / (n_episodes / 2)
+final_epsilon = 0.1
+
+agent = BlackjackAgent(
+    learning_rate = learning_rate,
+    initial_epsilon = start_epsilon,
+    epsilon_decay = epsilon_decay,
+    final_epsilon = final_epsilon,
+)
+
+env = gym.wrappers.RecordEpisodeStatistics(env, deque_size=n_episodes)
+for episode in tqdm(range(n_episodes)):
+    state, info = env.reset()
+    done = False
+    
+    #play one episode
+    while not done:
+        action = agent.get_action(state)
+        next_state, reward, terminated, truncated, info = env.step(action)
+
+        # update the agent
+        agent.update(state, action, reward, terminated, next_state)
+
+        # update done status and state
+        done = terminated or truncated
+        state = next_state
+
+    # once a game is finished we decay epsilon -> converge towards exploitation
+    agent.decay_epsilon()
+
