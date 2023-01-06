@@ -143,3 +143,32 @@ for episode in tqdm(range(n_episodes)):
     # once a game is finished we decay epsilon -> converge towards exploitation
     agent.decay_epsilon()
 
+
+# *** VISUALISE THE TRAINING ***
+
+rolling_length = 500
+fig, axs = plt.subplots(ncols=3, figsize=(12, 5))
+
+# Episode rewards plot
+axs[0].set_title("Episode rewards")
+reward_moving_average = (
+    np.convolve(np.array(env.return_queue).flatten(), np.ones(rolling_length), mode="valid") / rolling_length
+)
+axs[0].plot(range(len(reward_moving_average)), reward_moving_average)
+
+# Episode lengths plot
+axs[1].set_title("Episode lengths")
+length_moving_average = (
+    np.convolve(np.array(env.length_queue).flatten(), np.ones(rolling_length), mode="same") / rolling_length
+)
+axs[1].plot(range(len(length_moving_average)), length_moving_average)
+
+# Training error plot
+axs[2].set_title("Training Error")
+training_error_moving_average = (
+    np.convolve(np.array(agent.training_error), np.ones(rolling_length), mode="same") / rolling_length
+)
+axs[2].plot(range(len(training_error_moving_average)), training_error_moving_average)
+
+plt.tight_layout()
+plt.show()
