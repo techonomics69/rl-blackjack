@@ -12,3 +12,15 @@ In this tutorial, we’ll explore and solve the *Blackjack-v1* environment. Blac
 - hit (1): the player will be given another card, however the player could get over 21 and bust
 
 To solve this problem you may pick your favorite discrete RL algorithm. The presented solution uses Q-learning (a model-free RL algorithm). 
+
+## Installing environment
+
+To run the code in this repository, you must first install and activate the conda environment. Simply paste the following commands into your terminal.
+
+```bash
+# Create conda environment from YML file
+conda env create -f environment.yml
+
+# Activate the conda environment
+conda activate drl
+```
